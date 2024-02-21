@@ -220,6 +220,7 @@ new Vue({
     },
     createClient() {
       const name = this.clientCreateName;
+	  const allowedGWIPs = this.clientCreateAllowedIps;
       if (!name) return;
 
       this.api.createClient({ name, allowedGWIPs })

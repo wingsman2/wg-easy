@@ -259,11 +259,10 @@ Endpoint = ${WG_HOST}:${WG_PORT}`;
       id,
       name,
       address,
-      
+	    allowedGWIPs,
       privateKey,
       publicKey,
       preSharedKey,
-      allowedGWIPs,
       createdAt: new Date(),
       updatedAt: new Date(),
 
@@ -329,7 +328,7 @@ Endpoint = ${WG_HOST}:${WG_PORT}`;
     const client = await this.getClient({ clientId });
     client.allowedGWIPs = allowedGWIPs;
     client.updatedAt = new Date();
-
     await this.saveConfig();
   }
+
 };

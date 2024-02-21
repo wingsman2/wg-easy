@@ -123,6 +123,7 @@ class API {
       body: { address },
     });
   }
+
   async updateClientAllowIPS({ clientId, allowedGWIPs }) {
     return this.call({
       method: 'put',
@@ -130,4 +131,5 @@ class API {
       body: { allowedGWIPs },
     });
   }
+
 }
