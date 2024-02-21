@@ -43,10 +43,13 @@ new Vue({
     clientDelete: null,
     clientCreate: null,
     clientCreateName: '',
+    clientCreateAllowedIps: '',
     clientEditName: null,
     clientEditNameId: null,
     clientEditAddress: null,
     clientEditAddressId: null,
+    clientEditAllowIPS: null,
+    clientEditAllowIPSId: null,
     qrcode: null,
 
     currentRelease: null,
@@ -219,7 +222,7 @@ new Vue({
       const name = this.clientCreateName;
       if (!name) return;
 
-      this.api.createClient({ name })
+      this.api.createClient({ name, allowedGWIPs })
         .catch((err) => alert(err.message || err.toString()))
         .finally(() => this.refresh().catch(console.error));
     },
@@ -246,6 +249,11 @@ new Vue({
     updateClientAddress(client, address) {
       this.api.updateClientAddress({ clientId: client.id, address })
         .catch((err) => alert(err.message || err.toString()))
+        .finally(() => this.refresh().catch(console.error));
+    },
+    updateClientAllowIPS(client, allowedGWIPs) {
+      this.api.updateClientAllowIPS({ clientId: client.id, allowedGWIPs })
+        .catch(err => alert(err.message || err.toString()))
         .finally(() => this.refresh().catch(console.error));
     },
     toggleTheme() {
