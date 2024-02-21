@@ -1,9 +1,7 @@
-name: Build & Publish Nightly
+name: Build & Publish Development
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: "0 0 * * *"
 
 jobs:
   deploy:
@@ -36,4 +34,4 @@ jobs:
       with:
         push: true
         platforms: linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64/v8
-        tags: ghcr.io/wg-easy/wg-easy:nightly
+        tags: ghcr.io/wg-easy/wg-easy:development

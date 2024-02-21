@@ -60,14 +60,14 @@ module.exports = class WireGuard {
 
         await this.__saveConfig(config);
         await Util.exec('wg-quick down wg0').catch(() => { });
-        await Util.exec('wg-quick up wg0').catch(err => {
+        await Util.exec('wg-quick up wg0').catch((err) => {
           if (err && err.message && err.message.includes('Cannot find device "wg0"')) {
             throw new Error('WireGuard exited with the error: Cannot find device "wg0"\nThis usually means that your host\'s kernel does not support WireGuard!');
           }
 
           throw err;
         });
-        // await Util.exec(`iptables -t nat -A POSTROUTING -s ${WG_DEFAULT_ADDRESS.replace('x', '0')}/24 -o eth0 -j MASQUERADE`);
+        // await Util.exec(`iptables -t nat -A POSTROUTING -s ${WG_DEFAULT_ADDRESS.replace('x', '0')}/24 -o ' + WG_DEVICE + ' -j MASQUERADE`);
         // await Util.exec('iptables -A INPUT -p udp -m udp --dport 51820 -j ACCEPT');
         // await Util.exec('iptables -A FORWARD -i wg0 -j ACCEPT');
         // await Util.exec('iptables -A FORWARD -o wg0 -j ACCEPT');
@@ -140,7 +140,7 @@ AllowedIPs = ${checkallowed}`;
       name: client.name,
       enabled: client.enabled,
       address: client.address,
-	  allowedGWIPs: client.allowedGWIPs,
+      allowedGWIPs: client.allowedGWIPs,
       publicKey: client.publicKey,
       createdAt: new Date(client.createdAt),
       updatedAt: new Date(client.updatedAt),
@@ -160,7 +160,7 @@ AllowedIPs = ${checkallowed}`;
       .trim()
       .split('\n')
       .slice(1)
-      .forEach(line => {
+      .forEach((line) => {
         const [
           publicKey,
           preSharedKey, // eslint-disable-line no-unused-vars
@@ -172,7 +172,7 @@ AllowedIPs = ${checkallowed}`;
           persistentKeepalive,
         ] = line.split('\t');
 
-        const client = clients.find(client => client.publicKey === publicKey);
+        const client = clients.find((client) => client.publicKey === publicKey);
         if (!client) return;
 
         client.latestHandshakeAt = latestHandshakeAt === '0'
@@ -200,12 +200,11 @@ AllowedIPs = ${checkallowed}`;
     const config = await this.getConfig();
     const client = await this.getClient({ clientId });
 
-    return `
-[Interface]
+    return `[Interface]
 PrivateKey = ${client.privateKey}
 Address = ${client.address}/24
-${WG_DEFAULT_DNS ? `DNS = ${WG_DEFAULT_DNS}` : ''}
-${WG_MTU ? `MTU = ${WG_MTU}` : ''}
+${WG_DEFAULT_DNS ? `DNS = ${WG_DEFAULT_DNS}\n` : ''}\
+${WG_MTU ? `MTU = ${WG_MTU}\n` : ''}\
 
 [Peer]
 PublicKey = ${config.server.publicKey}
@@ -240,7 +239,7 @@ Endpoint = ${WG_HOST}:${WG_PORT}`;
     // Calculate next IP
     let address;
     for (let i = 2; i < 255; i++) {
-      const client = Object.values(config.clients).find(client => {
+      const client = Object.values(config.clients).find((client) => {
         return client.address === WG_DEFAULT_ADDRESS.replace('x', i);
       });
 
@@ -255,22 +254,22 @@ Endpoint = ${WG_HOST}:${WG_PORT}`;
     }
 
     // Create Client
-    const clientId = uuid.v4();
+    const id = uuid.v4();
     const client = {
+      id,
       name,
       address,
-	  allowedGWIPs,
+	    allowedGWIPs,
       privateKey,
       publicKey,
       preSharedKey,
-
       createdAt: new Date(),
       updatedAt: new Date(),
 
       enabled: true,
     };
 
-    config.clients[clientId] = client;
+    config.clients[id] = client;
 
     await this.saveConfig();
 
@@ -325,12 +324,10 @@ Endpoint = ${WG_HOST}:${WG_PORT}`;
 
     await this.saveConfig();
   }
-
   async updateClientAllowIPS({ clientId, allowedGWIPs }) {
     const client = await this.getClient({ clientId });
     client.allowedGWIPs = allowedGWIPs;
     client.updatedAt = new Date();
-
     await this.saveConfig();
   }
 
