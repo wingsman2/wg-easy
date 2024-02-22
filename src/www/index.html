@@ -375,7 +375,8 @@
                     </div>
                     <div class="mt-2">
                       <p class="text-sm text-gray-500">
-                        <input class="rounded p-2 border-2 border-gray-100 focus:border-gray-200 outline-none w-full"
+                        <input 
+                          class="rounded p-2 border-2 dark:bg-neutral-700 dark:text-neutral-200 border-gray-100 dark:border-neutral-600 focus:border-gray-200 focus:dark:border-neutral-500 dark:placeholder:text-neutral-400 outline-none w-full"
                           type="text" v-model.trim="clientCreateAllowedIps" placeholder="Allowed IPs (optional)" />
                       </p>
                     </div>
@@ -395,12 +396,6 @@
                   class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 dark:border-neutral-500 shadow-sm px-4 py-2 bg-white dark:bg-neutral-500 text-base font-medium text-gray-700 dark:text-neutral-50 hover:bg-gray-50 dark:hover:bg-neutral-600 dark:hover:border-neutral-600 focus:outline-none sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
                   {{$t("cancel")}}
                 </button>
-              </div>
-              <div class="mt-2">
-                      <p class="text-sm text-gray-500">
-                        <input class="rounded p-2 border-2 border-gray-100 focus:border-gray-200 outline-none w-full"
-                        type="text" v-model.trim="clientCreateAllowedIps" placeholder="Allowed IPs (optional)" />
-                    </p>
               </div>
             </div>
           </div>
