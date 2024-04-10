@@ -305,7 +305,7 @@ new Vue({
     },
     updateClientAllowIPS(client, allowedGWIPs) {
       this.api.updateClientAllowIPS({ clientId: client.id, allowedGWIPs })
-        .catch(err => alert(err.message || err.toString()))
+        .catch((err) => alert(err.message || err.toString()))
         .finally(() => this.refresh().catch(console.error));
     },
     toggleTheme() {
