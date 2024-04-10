@@ -213,7 +213,10 @@ module.exports = class Server {
       }))
       .put('/api/wireguard/client/:clientId/allowedGWIPs', defineEventHandler(async (event) => {
         const clientId = getRouterParam(event, 'clientId');
-        const allowedGWIPs = getRouterParam(event, 'allowedGWIPs');
+        if (clientId === '__proto__' || clientId === 'constructor' || clientId === 'prototype') {
+          throw createError({ status: 403 });
+        }
+        const { allowedGWIPs } = await readBody(event);
         await WireGuard.updateClientAllowIPS({ clientId, allowedGWIPs });
         return { success: true };
       }));
