@@ -104,14 +104,17 @@ PostDown = ${WG_POST_DOWN}
 
     for (const [clientId, client] of Object.entries(config.clients)) {
       if (!client.enabled) continue;
-
+var checkallowed;
+if(!client.allowedGWIPs){
+	checkallowed = client.address+"/32";
+}else{checkallowed=client.address+"/32, "+client.allowedGWIPs}
       result += `
 
 # Client: ${client.name} (${clientId})
 [Peer]
 PublicKey = ${client.publicKey}
 ${client.preSharedKey ? `PresharedKey = ${client.preSharedKey}\n` : ''
-}AllowedIPs = ${client.address}/32`;
+}AllowedIPs = ${checkallowed}`;
     }
 
     debug('Config saving...');
@@ -137,6 +140,7 @@ ${client.preSharedKey ? `PresharedKey = ${client.preSharedKey}\n` : ''
       name: client.name,
       enabled: client.enabled,
       address: client.address,
+      allowedGWIPs: client.allowedGWIPs,
       publicKey: client.publicKey,
       createdAt: new Date(client.createdAt),
       updatedAt: new Date(client.updatedAt),
@@ -219,9 +223,12 @@ Endpoint = ${WG_HOST}:${WG_PORT}`;
     });
   }
 
-  async createClient({ name }) {
+  async createClient({ name, allowedGWIPs }) {
     if (!name) {
       throw new Error('Missing: Name');
+    }
+    if (!allowedGWIPs) {
+      allowedGWIPs = "";
     }
 
     const config = await this.getConfig();
@@ -253,10 +260,10 @@ Endpoint = ${WG_HOST}:${WG_PORT}`;
       id,
       name,
       address,
+	    allowedGWIPs,
       privateKey,
       publicKey,
       preSharedKey,
-
       createdAt: new Date(),
       updatedAt: new Date(),
 
@@ -316,6 +323,12 @@ Endpoint = ${WG_HOST}:${WG_PORT}`;
     client.address = address;
     client.updatedAt = new Date();
 
+    await this.saveConfig();
+  }
+  async updateClientAllowIPS({ clientId, allowedGWIPs }) {
+    const client = await this.getClient({ clientId });
+    client.allowedGWIPs = allowedGWIPs;
+    client.updatedAt = new Date();
     await this.saveConfig();
   }
 
