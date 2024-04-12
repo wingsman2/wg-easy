@@ -104,11 +104,11 @@ PostDown = ${WG_POST_DOWN}
 
     for (const [clientId, client] of Object.entries(config.clients)) {
       if (!client.enabled) continue;
-      if (!client.allowedGWIPs){
-        const checkallowed = client.address+"/32";
+      if (!client.allowedGWIPs) {
+        checkallowed = client.address+"/32";
       } else {
-	checkallowed=client.address + "/32, " + client.allowedGWIPs
-      };
+	checkallowed = '${client.address}/32, ${client.allowedGWIPs}';
+      }
       result += `
 
 # Client: ${client.name} (${clientId})
@@ -326,6 +326,7 @@ Endpoint = ${WG_HOST}:${WG_PORT}`;
 
     await this.saveConfig();
   }
+	
   async updateClientAllowIPS({ clientId, allowedGWIPs }) {
     const client = await this.getClient({ clientId });
     client.allowedGWIPs = allowedGWIPs;
