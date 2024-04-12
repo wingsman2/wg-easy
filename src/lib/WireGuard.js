@@ -104,10 +104,12 @@ PostDown = ${WG_POST_DOWN}
 
     for (const [clientId, client] of Object.entries(config.clients)) {
       if (!client.enabled) continue;
-var checkallowed;
-if(!client.allowedGWIPs){
-	checkallowed = client.address+"/32";
-}else{checkallowed=client.address+"/32, "+client.allowedGWIPs}
+      let checkallowed = '';
+      if (!client.allowedGWIPs) {
+        checkallowed = `${client.address}/32`;
+      } else {
+        checkallowed = `${client.address}/32, ${client.allowedGWIPs}`;
+      }
       result += `
 
 # Client: ${client.name} (${clientId})
@@ -228,7 +230,7 @@ Endpoint = ${WG_HOST}:${WG_PORT}`;
       throw new Error('Missing: Name');
     }
     if (!allowedGWIPs) {
-      allowedGWIPs = "";
+      allowedGWIPs = '';
     }
 
     const config = await this.getConfig();
@@ -260,7 +262,7 @@ Endpoint = ${WG_HOST}:${WG_PORT}`;
       id,
       name,
       address,
-	    allowedGWIPs,
+      allowedGWIPs,
       privateKey,
       publicKey,
       preSharedKey,
@@ -325,6 +327,7 @@ Endpoint = ${WG_HOST}:${WG_PORT}`;
 
     await this.saveConfig();
   }
+
   async updateClientAllowIPS({ clientId, allowedGWIPs }) {
     const client = await this.getClient({ clientId });
     client.allowedGWIPs = allowedGWIPs;
