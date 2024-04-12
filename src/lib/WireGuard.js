@@ -104,7 +104,7 @@ PostDown = ${WG_POST_DOWN}
 
     for (const [clientId, client] of Object.entries(config.clients)) {
       if (!client.enabled) continue;
-      var checkallowed = '';
+      let checkallowed = '';
       if (!client.allowedGWIPs) {
         checkallowed = `${client.address}/32`;
       } else {
