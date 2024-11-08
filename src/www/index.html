@@ -207,6 +207,7 @@
                       </div>
                       <!-- Address -->
                       <div class=" block md:inline-block pb-1 md:pb-0 text-gray-500 dark:text-neutral-400 text-xs">
+                        <span class="group">
                           <!-- Show -->
                           <input v-show="clientEditAddressId === client.id" v-model="clientEditAddress"
                             v-on:keyup.enter="updateClientAddress(client, clientEditAddress); clientEditAddress = null; clientEditAddressId = null;"
@@ -227,10 +228,8 @@
                                 d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                             </svg>
                           </span>
-                      </div>
                       <p>
                       <!-- Allowed Ips -->
-                      <div class=" block md:inline-block pb-1 md:pb-0 text-gray-500 dark:text-neutral-400 text-xs">
                      <!-- Show -->
                       <input v-show="clientEditAllowIPSId === client.id" v-model="clientEditAllowIPS"
                         v-on:keyup.enter="updateClientAllowIPS(client, clientEditAllowIPS); clientEditAllowIPS = null; clientEditAllowIPSId = null;"
@@ -251,7 +250,6 @@
                             d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                         </svg>
                         </span>
-                      </div>
                         </span>
                         <!-- Inline Transfer TX -->
                         <span v-if="!uiTrafficStats && client.transferTx" class="whitespace-nowrap" :title="$t('totalDownload') + bytes(client.transferTx)">
