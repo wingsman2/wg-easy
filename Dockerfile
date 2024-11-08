@@ -1,17 +1,20 @@
-# There's an issue with node:20-alpine.
-# Docker deployment is canceled after 25< minutes.
-
+# As a workaround we have to build on nodejs 18
+# nodejs 20 hangs on build with armv6/armv7
 FROM docker.io/library/node:18-alpine AS build_node_modules
 
+# Update npm to latest
+RUN npm install -g npm@latest
+
 # Copy Web UI
-COPY src/ /app/
+COPY src /app
 WORKDIR /app
 RUN npm ci --omit=dev &&\
     mv node_modules /node_modules
 
 # Copy build result to a new image.
 # This saves a lot of disk space.
-FROM docker.io/library/node:18-alpine
+FROM docker.io/library/node:lts-alpine
+HEALTHCHECK CMD /usr/bin/timeout 5s /bin/sh -c "/usr/bin/wg show | /bin/grep -q interface || exit 1" --interval=1m --timeout=5s --retries=3
 COPY --from=build_node_modules /app /app
 
 # Move node_modules one directory up, so during development
@@ -23,11 +26,9 @@ COPY --from=build_node_modules /app /app
 # than what runs inside of docker.
 COPY --from=build_node_modules /node_modules /node_modules
 
-RUN \
-    # Enable this to run `npm run serve`
-    npm i -g nodemon &&\
-    # Delete unnecessary files 
-    npm cache clean --force && rm -rf ~/.npm
+# Copy the needed wg-password scripts
+COPY --from=build_node_modules /app/wgpw.sh /bin/wgpw
+RUN chmod +x /bin/wgpw
 
 # Install Linux packages
 RUN apk add --no-cache \
@@ -39,10 +40,6 @@ RUN apk add --no-cache \
 
 # Use iptables-legacy
 RUN update-alternatives --install /sbin/iptables iptables /sbin/iptables-legacy 10 --slave /sbin/iptables-restore iptables-restore /sbin/iptables-legacy-restore --slave /sbin/iptables-save iptables-save /sbin/iptables-legacy-save
-
-# Expose Ports
-EXPOSE 51820/udp
-EXPOSE 51821/tcp
 
 # Set Environment
 ENV DEBUG=Server,WireGuard

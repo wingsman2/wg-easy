@@ -43,6 +43,13 @@ class API {
     });
   }
 
+  async getRememberMeEnabled() {
+    return this.call({
+      method: 'get',
+      path: '/remember-me',
+    });
+  }
+
   async getuiTrafficStats() {
     return this.call({
       method: 'get',
@@ -57,6 +64,20 @@ class API {
     });
   }
 
+  async getWGEnableOneTimeLinks() {
+    return this.call({
+      method: 'get',
+      path: '/wg-enable-one-time-links',
+    });
+  }
+
+  async getWGEnableExpireTime() {
+    return this.call({
+      method: 'get',
+      path: '/wg-enable-expire-time',
+    });
+  }
+
   async getSession() {
     return this.call({
       method: 'get',
@@ -64,11 +85,11 @@ class API {
     });
   }
 
-  async createSession({ password }) {
+  async createSession({ password, remember }) {
     return this.call({
       method: 'post',
       path: '/session',
-      body: { password },
+      body: { password, remember },
     });
   }
 
@@ -87,17 +108,21 @@ class API {
       ...client,
       createdAt: new Date(client.createdAt),
       updatedAt: new Date(client.updatedAt),
+      expiredAt: client.expiredAt !== null
+        ? new Date(client.expiredAt)
+        : null,
       latestHandshakeAt: client.latestHandshakeAt !== null
         ? new Date(client.latestHandshakeAt)
         : null,
     })));
   }
 
-  async createClient({ name, allowedGWIPs }) {
+  async createClient({ name, allowedGWIPs, expiredDate }) {
     return this.call({
       method: 'post',
       path: '/wireguard/client',
-      body: { name, allowedGWIPs },
+      body: { name, allowedGWIPs, expiredDate },
+
     });
   }
 
@@ -105,6 +130,13 @@ class API {
     return this.call({
       method: 'delete',
       path: `/wireguard/client/${clientId}`,
+    });
+  }
+
+  async showOneTimeLink({ clientId }) {
+    return this.call({
+      method: 'post',
+      path: `/wireguard/client/${clientId}/generateOneTimeLink`,
     });
   }
 
@@ -143,6 +175,29 @@ class API {
       method: 'put',
       path: `/wireguard/client/${clientId}/allowedGWIPs/`,
       body: { allowedGWIPs },
+    });
+  }
+
+  async updateClientExpireDate({ clientId, expireDate }) {
+    return this.call({
+      method: 'put',
+      path: `/wireguard/client/${clientId}/expireDate/`,
+      body: { expireDate },
+    });
+  }
+
+  async restoreConfiguration(file) {
+    return this.call({
+      method: 'put',
+      path: '/wireguard/restore',
+      body: { file },
+    });
+  }
+
+  async getUiSortClients() {
+    return this.call({
+      method: 'get',
+      path: '/ui-sort-clients',
     });
   }
 
