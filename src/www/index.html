@@ -207,7 +207,6 @@
                       </div>
                       <!-- Address -->
                       <div class=" block md:inline-block pb-1 md:pb-0 text-gray-500 dark:text-neutral-400 text-xs">
-                        <span class="group">
                           <!-- Show -->
                           <input v-show="clientEditAddressId === client.id" v-model="clientEditAddress"
                             v-on:keyup.enter="updateClientAddress(client, clientEditAddress); clientEditAddress = null; clientEditAddressId = null;"
