@@ -15,7 +15,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
       with:
-        ref: production
+        ref: master
 
     - name: Set up QEMU
       uses: docker/setup-qemu-action@v3
@@ -31,7 +31,7 @@ jobs:
         password: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Build Docker Image
-      uses: docker/build-push-action@v5
+      uses: docker/build-push-action@v6
       with:
         push: false
         platforms: linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64/v8
